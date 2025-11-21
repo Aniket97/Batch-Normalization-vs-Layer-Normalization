@@ -14,40 +14,24 @@ Below are the 6 key plots included for every architecture.
 
 ---
 
-### 1) Training & Validation Loss/Accuracy vs Epoch (combined)
+### 1) Training & Validation Loss vs Epoch (Combined)
 
 **What:**  
 Two subplots (or a combined panel):  
-- Training & validation **loss** vs epoch  
-- Training & validation **accuracy** vs epoch  
-Both include **BN and LN curves** on the same axes.
+- Training & validation **loss** vs epoch   
 
 **Why:**  
-Shows convergence speed, stability, and overfitting differences.
+Shows convergence speed.
 
-**How:**  
-- Average across **≥5 seeds**  
-- Plot **mean ± 1 std** (shaded region)  
-- Mark learning-rate changes  
-- Keep identical x-ranges for BN and LN  
-- Provide raw (non-smoothed) curves in the supplement
 
----
-
-### 2) Final Test Performance Across Architectures (bar plot)
+### 2) Training & Validation Accuracy vs Epoch (Combined)
 
 **What:**  
-A grouped bar plot:  
-- Each group = architecture (MLP, CNN, LSTM, Transformer, …)  
-- Bars = BN vs LN  
-- Y-axis = final test accuracy (or task metric)
+Two subplots (or a combined panel):  
+- Training & validation **Accuracy** vs epoch   
 
 **Why:**  
-Provides a single-number cross-architecture comparison.
-
-**How:**  
-- Report **mean ± std**  
-- Add statistical significance markers (paired t-test / Wilcoxon)
+Shows convergence speed, stability and overfitting.
 
 ---
 
@@ -61,60 +45,22 @@ Provides a single-number cross-architecture comparison.
 **Why:**  
 Highlights BN’s dependence on batch statistics.
 
-**How:**  
-- Points show mean; vertical error bars show std  
-- For tiny batches, annotate with “mini-batch too small for BN”
-
 ---
+### 4) Global Gradient Norm vs Training Step (line plot)
 
-### 4) Convergence Speed: Time/Epochs to Reach Threshold
-
-**What:**  
-Plot epochs (or wall-clock time) required to reach a target metric (e.g., 80% val accuracy).  
-Use a bar plot or CDF.
+- X: training step / epoch
+- Y: global L2 norm of all gradients ( L2 norm of gradient is square_root(sum(square(gradient))) )
 
 **Why:**  
-Shows the practical training-time advantage/disadvantage of BN vs LN.
+Shows overall gradient stability; BN sometimes causes noisy spikes.
 
-**How:**  
-- Treat missing targets as **censored**  
-- Show them separately (e.g., hatched bars or >max marker)  
-- Report **median + IQR**
+### 5) Layer Gradient Distribution (violin / histogram) at several checkpoints
 
----
+- X: layer index
+- Y: distribution (violin) of gradient values or gradient magnitudes (sample at epoch 1, mid, final)
 
-### 5) Batch Statistics Stability (BN) vs Equivalent LN Metric
-
-**What:**  
-For a representative channel/unit:  
-- Plot per-mini-batch **mean** of activations  
-- Plot per-mini-batch **variance**  
-Overlay BN vs LN.
-
-**Why:**  
-Shows noisy batch-stat fluctuations of BN vs stable per-example LN stats.
-
-**How:**  
-- Sample a few channels  
-- Plot time-series across batches  
-- Add a zoomed-in inset for noisy regions
-
----
-
-### 6) Variability Across Random Seeds (violin/boxplot)
-
-**What:**  
-A violin or boxplot:  
-- X = normalization method (BN, LN)  
-- Y = final test accuracy across seeds/hyperparameter repeats
-
-**Why:**  
-Reveals reproducibility and sensitivity to random factors.
-
-**How:**  
-- Use ≥5 seeds (preferably 10)  
-- Show median, quartiles, outliers  
-- Report effect size and p-value
+**Why:** 
+Visualizes if gradients are heavy-tailed or centered near zero (vanishing).
 
 ---
 
